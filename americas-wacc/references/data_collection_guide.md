@@ -93,3 +93,20 @@
 - 对冲成本：`hedge = local_base - fx_base + 1.5%`
 - 名义 WACC：`WACC_nominal = Equity_contribution + Debt_contribution`
 - 真实 WACC：`WACC_real = (1+WACC_nominal)/(1+inflation)-1`
+
+
+
+## 七、最终输出的来源引用（必须附在结尾）
+
+在两张汇总表后，必须增加“数据来源引用”章节，建议格式：
+
+| 引用ID | 字段 | 国家 | 数值 | 来源 | URL | 数据日期 | 输出位置 |
+|---|---|---|---:|---|---|---|---|
+| SRC-1 | Rf(10Y美债) | 加拿大 | 4.30% | UST 10Y | <url> | 2026-04-16 | 表1-加拿大-Rf(10Y美债) |
+| SRC-2 | Total ERP | 巴西 | x.xx% | Damodaran ctyprem | <url> | 2026-01 | 表1-巴西-ERP+CRP |
+
+要求：
+1. 每个关键字段都要能追溯到至少一个引用ID。
+2. 输出位置必须写到“表名-国家-字段”。
+3. 若日期不确定，填“日期待核验”，但 URL 不能省略。
+4. Damodaran、Trading Economics、PwC 等来源可复用，但字段映射不可省略。

@@ -144,6 +144,7 @@ def main() -> None:
         "assumptions": assumption,
         "usd_inputs": usd_inputs,
         "results": results,
+        "source_refs": payload.get("source_refs", []),
     }
 
     rendered = json.dumps(output, ensure_ascii=False, indent=2)

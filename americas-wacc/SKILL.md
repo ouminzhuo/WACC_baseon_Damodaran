@@ -83,6 +83,7 @@ python americas-wacc/scripts/calc_wacc.py \
 Ke 的无风险利率统一使用 10 年美债（`usd_equity_rf_rate`，默认取 `usd_10y_bond_rate`）。
 
 Always include:
+- 输出末尾必须附“数据来源引用”清单（含 URL、日期、字段位置映射）
 - 表 1（股权侧参数与贡献）：`国家 / Rf(10Y美债) / ERP+CRP / 无杠杆Beta / 杠杆Beta / Ke / 股权资本 / 股权贡献`
 - 表 2（债权侧参数与贡献）：`国家 / 本币比例 / 主权违约利差 / 本国10Y / 本币基准 / 项目信用利差 / 本币融资利率 / 外币基准 / 外币融资利率 / 营业税 / 预提税 / 汇率对冲成本 / 本币债权回报率 / 外币债权回报率 / 债权资本 / 公司所得税 / 债权贡献`
 - 关键假设：资本结构、本外币债务比例、VAT/WHT 是否计入、是否计入汇率对冲
@@ -93,3 +94,16 @@ Always include:
 - `scripts/calc_wacc.py`: deterministic calculator for the full formula chain.
 - `references/data_collection_guide.md`: required output table format, data sourcing and field definitions.
 - `references/input_template.json`: ready-to-edit input payload template.
+
+
+## Source Citation Requirements
+
+In every final output, append a **数据来源引用** section at the end.
+
+Required format:
+1. Use IDs like `[SRC-1]`, `[SRC-2]`
+2. For each metric, include: `字段名 / 数值 / 来源名称 / URL / 数据日期 / 在输出中的位置`
+3. Position must be explicit, e.g. `表1-加拿大-Rf(10Y美债)` or `表2-巴西-主权违约利差`.
+4. If one source supports multiple fields, still list each field-position mapping separately.
+
+If source date is unknown, mark as `日期待核验` and keep URL mandatory.
