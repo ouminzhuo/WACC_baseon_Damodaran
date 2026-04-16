@@ -7,6 +7,24 @@
 - 智利（Chile）
 - 秘鲁（Peru）
 
+
+## 0) 先向用户收集的最小参数（必须）
+1. 国家列表（不填则默认：加拿大、巴西、阿根廷、智利、秘鲁）
+2. 资本结构：`equity_ratio`、`debt_ratio`
+3. 债务币种结构：`local_debt_ratio`、`fx_debt_ratio`
+4. 项目风险参数：每个国家至少给 `icr` 或 `project_credit_spread` 之一
+5. 计算开关：`apply_vat`、`apply_wht`、`apply_fx_hedge`
+
+> 若第 2/3/4 项缺失，不应直接计算，应先追问补齐。
+
+## 0.1) 可由技能自动查询/回填的参数
+- `risk_free_rate`、`local_10y_bond_rate`：Trading Economics
+- `total_erp`、`sovereign_default_spread_local`、`corporate_tax_rate`、`Moody's rating`：Damodaran ctryprem
+- `vat`、`withholding_tax`：PwC Tax Summaries
+- `inflation_rate`：官方 CPI YoY
+- `unlevered_beta`：`betaemerg.xls` / `betaRest.xls`
+- `usd_10y_bond_rate`：团队约定市场数据源
+
 ## 一、输出格式（必须按此两张汇总表输出）
 
 ### 表 1：股权侧参数与贡献

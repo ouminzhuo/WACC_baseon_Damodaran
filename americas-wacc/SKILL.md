@@ -15,6 +15,27 @@ Use this skill to produce a complete, auditable WACC workflow for the five focus
 4. Run the calculator script to produce nominal and real WACC outputs.
 5. Render the final answer using the **two required summary tables** from `references/data_collection_guide.md`.
 
+
+## Start Conditions (先收集最小输入再计算)
+
+Ask user for only these **must-provide** items before first run:
+- Country list (default: Canada, Brazil, Argentina, Chile, Peru)
+- Capital structure: `equity_ratio`, `debt_ratio`
+- Debt mix: `local_debt_ratio`, `fx_debt_ratio`
+- Project risk proxy: each country provide `icr` **or** `project_credit_spread`
+- Switches: `apply_vat`, `apply_wht`, `apply_fx_hedge`
+
+Then auto-collect or prefill the rest (with source citation):
+- `risk_free_rate`, `local_10y_bond_rate`: Trading Economics
+- `total_erp`, `sovereign_default_spread_local`, `corporate_tax_rate`, `Moody's rating`: Damodaran ctryprem
+- `vat`, `withholding_tax`: PwC Tax Summaries
+- `inflation_rate`: official CPI YoY sources
+- `unlevered_beta`: repository beta workbooks (`betaemerg.xls`, `betaRest.xls`)
+- `usd_10y_bond_rate`: market data source used by the analyst team
+
+If user does not provide country list, use the 5-country default.
+If user does not provide debt/equity mix, block calculation and ask one concise follow-up.
+
 ## Required Inputs
 
 For each country, provide:

@@ -25,5 +25,29 @@
       "inflation_rate": 0.025,
       "icr": 2.1
     }
-  ]
+  ],
+  "notes": {
+    "must_from_user": [
+      "equity_ratio",
+      "debt_ratio",
+      "local_debt_ratio",
+      "fx_debt_ratio",
+      "icr_or_project_credit_spread",
+      "apply_vat",
+      "apply_wht",
+      "apply_fx_hedge"
+    ],
+    "can_auto_fetch": [
+      "risk_free_rate",
+      "local_10y_bond_rate",
+      "total_erp",
+      "sovereign_default_spread_local",
+      "corporate_tax_rate",
+      "vat",
+      "withholding_tax",
+      "inflation_rate",
+      "unlevered_beta",
+      "usd_10y_bond_rate"
+    ]
+  }
 }
