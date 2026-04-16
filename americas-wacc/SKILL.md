@@ -43,6 +43,7 @@ For each country, provide:
 - `unlevered_beta`
 - `local_10y_bond_rate`
 - `sovereign_default_spread_local` (priority: Sovereign CDS; fallback: Adj. spread)
+- `sovereign_default_spread_usd` (required for FX base rate; no fallback to local)
 - `corporate_tax_rate`
 - `inflation_rate`
 - `icr` **or** `project_credit_spread`
@@ -50,7 +51,6 @@ For each country, provide:
 Optional but recommended:
 - `vat`
 - `withholding_tax`
-- `sovereign_default_spread_usd`
 
 Global assumptions:
 - `equity_ratio`, `debt_ratio`
@@ -81,6 +81,7 @@ python americas-wacc/scripts/calc_wacc.py \
 ## Output Expectations
 
 Ke 的无风险利率统一使用 10 年美债（`usd_equity_rf_rate`，默认取 `usd_10y_bond_rate`）。
+外币基准利率严格使用 `sovereign_default_spread_usd`，缺失时应报错，不得回退本币利差。
 
 Always include:
 - 输出末尾必须附“数据来源引用”清单（含 URL、日期、字段位置映射）

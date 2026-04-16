@@ -60,7 +60,9 @@ def compute_country(country: Dict[str, Any], assumption: Dict[str, Any], usd_inp
 
     local_10y = _parse_percent(country["local_10y_bond_rate"])
     sovereign_spread_local = _parse_percent(country["sovereign_default_spread_local"])
-    sovereign_spread_usd = _parse_percent(country.get("sovereign_default_spread_usd", sovereign_spread_local))
+    if "sovereign_default_spread_usd" not in country:
+        raise ValueError(f"{country.get('country', 'Unknown')}: missing sovereign_default_spread_usd; do not fallback to local spread")
+    sovereign_spread_usd = _parse_percent(country["sovereign_default_spread_usd"])
 
     vat = _parse_percent(country.get("vat", 0)) if assumption.get("apply_vat", False) else 0.0
     wht = _parse_percent(country.get("withholding_tax", 0)) if assumption.get("apply_wht", False) else 0.0

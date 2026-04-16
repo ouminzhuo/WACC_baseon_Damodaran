@@ -57,6 +57,7 @@
 > 主权违约利差取值规则：
 > 1. 优先 `Sovereign CDS`
 > 2. 无 CDS 时使用 `Adj. spread`
+> 3. 外币融资基准利率计算时，必须显式提供 USD 口径 `sovereign_default_spread_usd`，不得用 local 替代。
 
 ### 3) PwC Tax Summaries
 - 用途：VAT / WHT 标准税率与税务注释。
@@ -69,7 +70,7 @@
 - unlevered_beta
 - local_10y_bond_rate
 - sovereign_default_spread_local
-- sovereign_default_spread_usd（可选，不填时默认等于 local）
+- sovereign_default_spread_usd（必填；用于外币基准利率，禁止回退为 local）
 - corporate_tax_rate
 - vat
 - withholding_tax

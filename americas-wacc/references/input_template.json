@@ -23,7 +23,8 @@
       "vat": 0.05,
       "withholding_tax": 0.15,
       "inflation_rate": 0.025,
-      "icr": 2.1
+      "icr": 2.1,
+      "sovereign_default_spread_usd": 0.0
     }
   ],
   "notes": {
