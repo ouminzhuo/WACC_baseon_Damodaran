@@ -10,9 +10,10 @@ Use this skill to produce a complete, auditable WACC workflow for the five focus
 ## Workflow
 
 1. Collect per-country inputs following `references/data_collection_guide.md`.
-2. Build or update an input JSON based on `references/input_template.json`.
-3. Run the calculator script to produce nominal and real WACC outputs.
-4. Return a clear table with assumptions, country inputs, and key outputs.
+2. Query Damodaran country data from `https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/ctryprem.html` and capture at minimum: `Total ERP`, `Sovereign CDS`, `Adj. spread`, `Corporate Tax Rate`, `Moody's rating`.
+3. Build or update an input JSON based on `references/input_template.json`.
+4. Run the calculator script to produce nominal and real WACC outputs.
+5. Render the final answer using the **two required summary tables** from `references/data_collection_guide.md`.
 
 ## Required Inputs
 
@@ -21,7 +22,7 @@ For each country, provide:
 - `total_erp`
 - `unlevered_beta`
 - `local_10y_bond_rate`
-- `sovereign_default_spread_local`
+- `sovereign_default_spread_local` (priority: Sovereign CDS; fallback: Adj. spread)
 - `corporate_tax_rate`
 - `inflation_rate`
 - `icr` **or** `project_credit_spread`
@@ -59,14 +60,13 @@ python americas-wacc/scripts/calc_wacc.py \
 ## Output Expectations
 
 Always include:
-- Levered beta, required equity return, and equity contribution
-- Local/FX base rates and financing rates
-- Required local/FX debt returns after tax gross-up switches
-- Debt contribution, nominal WACC, and real WACC
-- A short note for country-specific handling (especially Argentina)
+- 表 1（股权侧参数与贡献）：`国家 / Rf / ERP+CRP / 无杠杆Beta / 杠杆Beta / Ke / 股权资本 / 股权贡献`
+- 表 2（债权侧参数与贡献）：`国家 / 本币比例 / 主权违约利差 / 本国10Y / 本币基准 / 项目信用利差 / 本币融资利率 / 外币基准 / 外币融资利率 / 营业税 / 预提税 / 汇率对冲成本 / 本币债权回报率 / 外币债权回报率 / 债权资本 / 公司所得税 / 债权贡献`
+- 关键假设：资本结构、本外币债务比例、VAT/WHT 是否计入、是否计入汇率对冲
+- 一段国家特例说明（尤其阿根廷）
 
 ## Resources
 
 - `scripts/calc_wacc.py`: deterministic calculator for the full formula chain.
-- `references/data_collection_guide.md`: data sourcing and field definitions.
+- `references/data_collection_guide.md`: required output table format, data sourcing and field definitions.
 - `references/input_template.json`: ready-to-edit input payload template.
