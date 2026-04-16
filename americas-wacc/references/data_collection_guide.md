@@ -18,7 +18,7 @@
 > 若第 2/3/4 项缺失，不应直接计算，应先追问补齐。
 
 ## 0.1) 可由技能自动查询/回填的参数
-- `risk_free_rate`、`local_10y_bond_rate`：Trading Economics
+- `local_10y_bond_rate`：Trading Economics
 - `total_erp`、`sovereign_default_spread_local`、`corporate_tax_rate`、`Moody's rating`：Damodaran ctryprem
 - `vat`、`withholding_tax`：PwC Tax Summaries
 - `inflation_rate`：官方 CPI YoY
@@ -65,7 +65,6 @@
 - 用途：CPI YoY（用于真实 WACC）。
 
 ## 四、建议录入字段（每个国家）
-- risk_free_rate
 - total_erp
 - unlevered_beta
 - local_10y_bond_rate
@@ -84,8 +83,10 @@
   - 在结果说明中标注“本币市场失真处理”
 
 ## 六、公式约定
+
+- 股权侧无风险利率口径：`Ke` 中的 `Rf` 统一取 10 年美债利率（USD），不取本币10Y。
 - 杠杆 Beta：`βL = βU × [1 + (1-Tc) × D/E]`
-- `Ke = Rf + βL × ERP_total`
+- `Ke = Rf_US10Y + βL × ERP_total`
 - 本币基准：`local_base = local_10y - sovereign_spread_local`
 - 外币基准：`fx_base = usd_10y - sovereign_spread_usd`
 - 项目利差：来自 `ICR_table.csv` 或外部已知值

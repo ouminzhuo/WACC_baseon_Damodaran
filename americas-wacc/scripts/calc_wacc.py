@@ -55,7 +55,6 @@ def compute_country(country: Dict[str, Any], assumption: Dict[str, Any], usd_inp
     fx_debt_ratio = float(assumption["fx_debt_ratio"])
 
     corporate_tax = _parse_percent(country["corporate_tax_rate"])
-    rf = _parse_percent(country["risk_free_rate"])
     erp_total = _parse_percent(country["total_erp"])
     unlevered_beta = float(country["unlevered_beta"])
 
@@ -75,7 +74,8 @@ def compute_country(country: Dict[str, Any], assumption: Dict[str, Any], usd_inp
         spread_rating, project_spread = spread_from_icr(icr, icr_rows)
 
     beta_l = unlevered_beta * (1 + (1 - corporate_tax) * (d_ratio / e_ratio))
-    ke = rf + beta_l * erp_total
+    equity_rf = _parse_percent(usd_inputs.get("usd_equity_rf_rate", usd_inputs["usd_10y_bond_rate"]))
+    ke = equity_rf + beta_l * erp_total
     equity_contribution = e_ratio * ke
 
     local_base = local_10y - sovereign_spread_local
@@ -100,6 +100,7 @@ def compute_country(country: Dict[str, Any], assumption: Dict[str, Any], usd_inp
         "inputs_used": {
             "spread_rating": spread_rating,
             "project_credit_spread": project_spread,
+            "equity_rf_used": equity_rf,
             "vat_applied": vat,
             "wht_applied": wht,
         },

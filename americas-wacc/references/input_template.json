@@ -9,12 +9,12 @@
     "apply_fx_hedge": false
   },
   "usd_inputs": {
-    "usd_10y_bond_rate": 0.043
+    "usd_10y_bond_rate": 0.043,
+    "usd_equity_rf_rate": 0.043
   },
   "countries": [
     {
       "country": "Canada",
-      "risk_free_rate": 0.031,
       "total_erp": 0.05,
       "unlevered_beta": 0.92,
       "local_10y_bond_rate": 0.031,
@@ -38,7 +38,6 @@
       "apply_fx_hedge"
     ],
     "can_auto_fetch": [
-      "risk_free_rate",
       "local_10y_bond_rate",
       "total_erp",
       "sovereign_default_spread_local",

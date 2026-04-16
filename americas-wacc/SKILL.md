@@ -26,7 +26,7 @@ Ask user for only these **must-provide** items before first run:
 - Switches: `apply_vat`, `apply_wht`, `apply_fx_hedge`
 
 Then auto-collect or prefill the rest (with source citation):
-- `risk_free_rate`, `local_10y_bond_rate`: Trading Economics
+- `local_10y_bond_rate`: Trading Economics
 - `total_erp`, `sovereign_default_spread_local`, `corporate_tax_rate`, `Moody's rating`: Damodaran ctryprem
 - `vat`, `withholding_tax`: PwC Tax Summaries
 - `inflation_rate`: official CPI YoY sources
@@ -39,7 +39,6 @@ If user does not provide debt/equity mix, block calculation and ask one concise 
 ## Required Inputs
 
 For each country, provide:
-- `risk_free_rate`
 - `total_erp`
 - `unlevered_beta`
 - `local_10y_bond_rate`
@@ -58,6 +57,7 @@ Global assumptions:
 - `local_debt_ratio`, `fx_debt_ratio`
 - `apply_vat`, `apply_wht`, `apply_fx_hedge`
 - `usd_10y_bond_rate`
+- `usd_equity_rf_rate` (default to `usd_10y_bond_rate`, used in Ke)
 
 ## Script Usage
 
@@ -80,8 +80,10 @@ python americas-wacc/scripts/calc_wacc.py \
 
 ## Output Expectations
 
+Ke 的无风险利率统一使用 10 年美债（`usd_equity_rf_rate`，默认取 `usd_10y_bond_rate`）。
+
 Always include:
-- 表 1（股权侧参数与贡献）：`国家 / Rf / ERP+CRP / 无杠杆Beta / 杠杆Beta / Ke / 股权资本 / 股权贡献`
+- 表 1（股权侧参数与贡献）：`国家 / Rf(10Y美债) / ERP+CRP / 无杠杆Beta / 杠杆Beta / Ke / 股权资本 / 股权贡献`
 - 表 2（债权侧参数与贡献）：`国家 / 本币比例 / 主权违约利差 / 本国10Y / 本币基准 / 项目信用利差 / 本币融资利率 / 外币基准 / 外币融资利率 / 营业税 / 预提税 / 汇率对冲成本 / 本币债权回报率 / 外币债权回报率 / 债权资本 / 公司所得税 / 债权贡献`
 - 关键假设：资本结构、本外币债务比例、VAT/WHT 是否计入、是否计入汇率对冲
 - 一段国家特例说明（尤其阿根廷）
