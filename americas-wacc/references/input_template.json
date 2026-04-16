@@ -1,0 +1,29 @@
+{
+  "assumptions": {
+    "equity_ratio": 0.2,
+    "debt_ratio": 0.8,
+    "local_debt_ratio": 0.5,
+    "fx_debt_ratio": 0.5,
+    "apply_vat": false,
+    "apply_wht": false,
+    "apply_fx_hedge": false
+  },
+  "usd_inputs": {
+    "usd_10y_bond_rate": 0.043
+  },
+  "countries": [
+    {
+      "country": "Canada",
+      "risk_free_rate": 0.031,
+      "total_erp": 0.05,
+      "unlevered_beta": 0.92,
+      "local_10y_bond_rate": 0.031,
+      "sovereign_default_spread_local": 0.0,
+      "corporate_tax_rate": 0.265,
+      "vat": 0.05,
+      "withholding_tax": 0.15,
+      "inflation_rate": 0.025,
+      "icr": 2.1
+    }
+  ]
+}
