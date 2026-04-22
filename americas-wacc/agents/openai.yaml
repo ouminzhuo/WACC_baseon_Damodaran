@@ -1,0 +1,4 @@
+interface:
+  display_name: "Americas WACC Builder"
+  short_description: "Build WACC for Americas markets"
+  default_prompt: "Build WACC tables and discount rates for Canada, Brazil, Argentina, Chile, and Peru from repository data and user assumptions."

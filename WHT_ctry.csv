@@ -1,0 +1,6 @@
+country,withholding_tax,source_url,collected_on,notes
+Canada,0.25,https://taxsummaries.pwc.com/canada/corporate/withholding-taxes,2026-04-22,online collected from PwC page snippet (general non-treaty WHT context)
+Brazil,0.15,https://taxsummaries.pwc.com/brazil/corporate/withholding-taxes,2026-04-22,online collected from PwC page snippet (non-resident default context)
+Argentina,0.1505,https://taxsummaries.pwc.com/argentina,2026-04-22,online collected from PwC overview snippet (interest WHT band includes 15.05)
+Chile,0.15,https://taxsummaries.pwc.com/chile/corporate/withholding-taxes,2026-04-22,online collected from PwC page snippet (treaty/common interest context)
+Peru,0.0499,https://taxsummaries.pwc.com/peru/corporate/income-determination,2026-04-22,online collected from PwC snippet (non-resident loan interest 4.99%)
