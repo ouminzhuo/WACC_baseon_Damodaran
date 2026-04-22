@@ -1,0 +1,6 @@
+country,withholding_tax,notes
+Canada,0.15,Standard illustrative WHT rate for workflow default
+Brazil,0.15,Standard illustrative WHT rate for workflow default
+Argentina,0.15,Standard illustrative WHT rate for workflow default
+Chile,0.15,Standard illustrative WHT rate for workflow default
+Peru,0.15,Standard illustrative WHT rate for workflow default
