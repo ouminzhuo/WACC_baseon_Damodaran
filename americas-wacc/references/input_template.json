@@ -1,0 +1,80 @@
+{
+  "assumptions": {
+    "equity_ratio": 0.2,
+    "debt_ratio": 0.8,
+    "local_debt_ratio": 0.5,
+    "fx_debt_ratio": 0.5,
+    "apply_vat": true,
+    "apply_wht": true,
+    "apply_fx_hedge": false,
+    "enforce_country_wht": true,
+    "allow_stale_wht": false,
+    "max_wht_age_days": 90,
+    "enforce_tax_from_tables": true,
+    "error_on_tax_input_mismatch": true
+  },
+  "usd_inputs": {
+    "usd_10y_bond_rate": 0.043,
+    "usd_equity_rf_rate": 0.043,
+    "us_sovereign_default_spread": 0.0
+  },
+  "countries": [
+    {
+      "country": "Canada",
+      "total_erp": 0.05,
+      "unlevered_beta": 0.92,
+      "local_10y_bond_rate": 0.031,
+      "sovereign_default_spread_local": 0.0,
+      "corporate_tax_rate": 0.265,
+      "vat": 0.05,
+      "withholding_tax": 0.15,
+      "inflation_rate": 0.025,
+      "icr": 2.1
+    }
+  ],
+  "notes": {
+    "must_from_user": [
+      "equity_ratio",
+      "debt_ratio",
+      "local_debt_ratio",
+      "fx_debt_ratio",
+      "icr_or_project_credit_spread",
+      "apply_vat",
+      "apply_wht",
+      "apply_fx_hedge"
+    ],
+    "can_auto_fetch": [
+      "local_10y_bond_rate",
+      "total_erp",
+      "sovereign_default_spread_local",
+      "corporate_tax_rate",
+      "vat",
+      "withholding_tax",
+      "inflation_rate",
+      "unlevered_beta",
+      "usd_10y_bond_rate"
+    ]
+  },
+  "source_refs": [
+    {
+      "id": "SRC-1",
+      "field": "Rf(10Y美债)",
+      "country": "Canada",
+      "value": 0.043,
+      "source_name": "UST 10Y",
+      "url": "https://tradingeconomics.com/united-states/government-bond-yield",
+      "data_date": "2026-04-16",
+      "output_position": "表1-Canada-Rf(10Y美债)"
+    },
+    {
+      "id": "SRC-2",
+      "field": "Total ERP",
+      "country": "Canada",
+      "value": "请填",
+      "source_name": "Damodaran ctryprem",
+      "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/ctryprem.html",
+      "data_date": "2026-01",
+      "output_position": "表1-Canada-ERP+CRP"
+    }
+  ]
+}
