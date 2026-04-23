@@ -7,9 +7,7 @@
     "apply_vat": false,
     "apply_wht": false,
     "apply_fx_hedge": false,
-    "enforce_country_wht": true,
-    "allow_stale_wht": false,
-    "max_wht_age_days": 90
+    "enforce_country_wht": true
   },
   "usd_inputs": {
     "usd_10y_bond_rate": 0.043,

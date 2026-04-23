@@ -36,7 +36,7 @@
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 
 ## 二、仓库内数据
-- `VAT_ctry.csv`：国家维度规则，提供 `include_vat_in_local_debt` 和 `include_vat_in_fx_debt`。
+- `VAT_ctry.csv`：国家维度规则，判断外币债权回报率中是否计入 VAT。
 - `WHT_ctry.csv`：国家维度规则，提供各国 WHT 取值并用于校验。
 - `ICR_table.csv`：ICR 区间 → 评级与项目利差（Spread）。
 - `betaemerg.xls`：巴西、阿根廷、智利、秘鲁等新兴市场行业 Beta（Industry Averages）。
@@ -86,8 +86,7 @@
 
 ## 六、公式约定
 
-- 营业税方法：`VAT = S × VAT_ori`。
-- 本币债权使用 `S_local=include_vat_in_local_debt`；外币债权使用 `S_fx=include_vat_in_fx_debt`。
+- 外币债权 VAT 规则：根据 `VAT_ctry.csv` 的 `include_vat_in_fx_debt` 判定是否在 `Kd2` 中计入 VAT。
 
 - 股权侧无风险利率口径：`Ke` 中的 `Rf` 统一取 10 年美债利率（USD），不取本币10Y。
 - 杠杆 Beta：`βL = βU × [1 + (1-Tc) × D/E]`
@@ -123,10 +122,3 @@
 - 建议默认 `enforce_country_wht = true`。
 - 开启时，模型必须从 `WHT_ctry.csv` 读取国家 WHT；缺失国家条目应直接报错。
 - 输出中需体现 `wht_source`，并在“数据来源引用”中列出该字段位置。
-
-
-## 九、WHT 在线更新要求
-
-- `WHT_ctry.csv` 必须包含 `source_url` 与 `collected_on`。
-- 默认仅使用最近 `max_wht_age_days`（默认90天）内的数据；超期则应先刷新。
-- 可用 `americas-wacc/scripts/refresh_wht_table.py` 写入最新在线查询值。

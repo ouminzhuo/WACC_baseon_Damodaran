@@ -19,7 +19,6 @@
   - 否则按 `icr` 在 `ICR_table.csv` 映射 `Spread is`
 - WHT 约束：
   - `enforce_country_wht = true` 时，WHT 从 `WHT_ctry.csv` 强制读取（缺失即报错）
-  - `allow_stale_wht = false` + `max_wht_age_days` 控制 WHT 数据时效性（超期拒绝计算）
 
 ### 2) 股权侧变量
 
@@ -49,15 +48,14 @@
 ### 4) 税项与对冲调整
 
 - `vat_applied`
-  - 按你定义的方法：`vat_applied = apply_vat × S_local × VAT_ori`
-  - 其中 `S_local` 来自 `VAT_ctry.csv` 的 `include_vat_in_local_debt`
+  - 若 `apply_vat = true`，则 `vat_applied = vat`；否则为 `0`
 
 - `wht_applied`
   - 若 `apply_wht = true`，则 `wht_applied = withholding_tax`；否则为 `0`
 
 - `vat_fx_applied`（外币债权 VAT）
-  - 按你定义的方法：`vat_fx_applied = apply_vat × S_fx × VAT_ori`
-  - 其中 `S_fx` 来自 `VAT_ctry.csv` 的 `include_vat_in_fx_debt`
+  - 从 `VAT_ctry.csv` 读取国家开关 `include_vat_in_fx_debt`
+  - 开关为真时：`vat_fx_applied = vat_applied`；否则 `vat_fx_applied = 0`
 
 - `hedge_cost`
   - `hedge_cost = local_base_rate - fx_base_rate + 0.01 + 0.005`
@@ -91,15 +89,11 @@
   - `project_credit_spread`
   - `equity_rf_used`
   - `us_sovereign_spread_used`
-  - `vat_original`
   - `vat_applied`
-  - `vat_local_rule_applied`
   - `vat_fx_rule_applied`
   - `vat_fx_applied`
   - `wht_applied`
   - `wht_source`
-  - `wht_source_url`
-  - `wht_collected_on`
 - `outputs`
   - `levered_beta`
   - `required_equity_return`
@@ -114,15 +108,3 @@
   - `debt_contribution`
   - `wacc_nominal`
   - `wacc_real`
-
-
-### 7) WHT 更新特性说明
-
-当前 WHT 机制具备“可更新 + 可强制时效校验”特性：
-
-1. **可更新**：通过 `americas-wacc/scripts/refresh_wht_table.py` 写入新行（含 `source_url` 与 `collected_on`）。
-2. **可追溯**：计算输出 `inputs_used` 中包含 `wht_source`、`wht_source_url`、`wht_collected_on`。
-3. **可拒绝陈旧数据**：当 `enforce_country_wht=true` 且 `allow_stale_wht=false` 时，若 `WHT_ctry.csv` 中 `collected_on` 超过 `max_wht_age_days`，计算会直接报错。
-4. **可配置**：通过 `assumptions.max_wht_age_days` 调整时效阈值；临时允许历史数据可设置 `allow_stale_wht=true`。
-
-建议生产场景保持：`enforce_country_wht=true`、`allow_stale_wht=false`。

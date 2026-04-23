@@ -10,7 +10,6 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
@@ -42,82 +41,41 @@ def load_icr_table(csv_path: Path) -> List[Tuple[float, float, str, float]]:
     return rows
 
 
-def load_vat_country_table(csv_path: Path) -> Dict[str, Dict[str, bool]]:
-    """Load per-country VAT switches for local/fx debt required return.
+def load_vat_country_table(csv_path: Path) -> Dict[str, bool]:
+    """Load per-country switch for applying VAT in FX debt required return.
 
     Required columns:
     - country
-    Optional columns:
-    - include_vat_in_local_debt (1/0, true/false)
-    - include_vat_in_fx_debt (1/0, true/false)
-
-    Backward compatibility:
-    - If only include_vat_in_fx_debt exists, local switch will reuse fx switch.
+    - include_vat_in_fx_debt (1/0, true/false, yes/no)
     """
-    mapping: Dict[str, Dict[str, bool]] = {}
+    mapping: Dict[str, bool] = {}
     with csv_path.open("r", encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
             country = str(row.get("country", "")).strip()
+            flag_raw = str(row.get("include_vat_in_fx_debt", "")).strip().lower()
             if not country:
                 continue
-            fx_raw = str(row.get("include_vat_in_fx_debt", "")).strip().lower()
-            local_raw = str(row.get("include_vat_in_local_debt", "")).strip().lower()
-            include_fx = fx_raw in {"1", "true", "yes", "y"}
-            if local_raw:
-                include_local = local_raw in {"1", "true", "yes", "y"}
-            else:
-                include_local = include_fx
-            mapping[country.lower()] = {
-                "include_local": include_local,
-                "include_fx": include_fx,
-            }
+            include_flag = flag_raw in {"1", "true", "yes", "y"}
+            mapping[country.lower()] = include_flag
     if not mapping:
         raise ValueError(f"No usable rows found in VAT country table: {csv_path}")
     return mapping
 
 
 
-def load_wht_country_table(csv_path: Path, *, max_age_days: int = 90, allow_stale: bool = False) -> Dict[str, Dict[str, Any]]:
-    """Load per-country withholding tax defaults with freshness metadata.
 
-    Required columns:
-    - country
-    - withholding_tax
-    Optional but recommended columns:
-    - source_url
-    - collected_on (YYYY-MM-DD)
-    """
-    mapping: Dict[str, Dict[str, Any]] = {}
-    today = date.today()
+def load_wht_country_table(csv_path: Path) -> Dict[str, float]:
+    """Load per-country withholding tax defaults."""
+    mapping: Dict[str, float] = {}
     with csv_path.open("r", encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
             country = str(row.get("country", "")).strip()
             wht_raw = str(row.get("withholding_tax", "")).strip()
-            source_url = str(row.get("source_url", "")).strip()
-            collected_on_raw = str(row.get("collected_on", "")).strip()
             if not country or not wht_raw:
                 continue
-
-            collected_on = None
-            age_days = None
-            if collected_on_raw:
-                collected_on = datetime.strptime(collected_on_raw, "%Y-%m-%d").date()
-                age_days = (today - collected_on).days
-                if age_days > max_age_days and not allow_stale:
-                    raise ValueError(
-                        f"{country}: stale WHT row ({age_days} days old). "
-                        f"Refresh WHT_ctry.csv from web source before calculation"
-                    )
-
-            mapping[country.lower()] = {
-                "wht": _parse_percent(wht_raw),
-                "source_url": source_url,
-                "collected_on": collected_on_raw,
-                "age_days": age_days,
-            }
-
+            mapping[country.lower()] = _parse_percent(wht_raw)
     if not mapping:
         raise ValueError(f"No usable rows found in WHT country table: {csv_path}")
     return mapping
@@ -136,7 +94,7 @@ def compute_country(
     usd_inputs: Dict[str, Any],
     icr_rows,
     vat_fx_rules: Dict[str, bool],
-    wht_country_rules: Dict[str, Dict[str, Any]],
+    wht_country_rules: Dict[str, float],
 ):
     e_ratio = float(assumption["equity_ratio"])
     d_ratio = float(assumption["debt_ratio"])
@@ -151,7 +109,7 @@ def compute_country(
     sovereign_spread_local = _parse_percent(country["sovereign_default_spread_local"])
     country_name = str(country.get("country", "Unknown"))
 
-    vat_ori = _parse_percent(country.get("vat", 0))
+    vat = _parse_percent(country.get("vat", 0)) if assumption.get("apply_vat", False) else 0.0
 
     enforce_country_wht = bool(assumption.get("enforce_country_wht", True))
     country_wht = wht_country_rules.get(country_name.lower())
@@ -159,21 +117,14 @@ def compute_country(
         if country_wht is None and enforce_country_wht:
             raise ValueError(f"{country_name}: missing WHT rule in WHT country table")
         if enforce_country_wht and country_wht is not None:
-            wht = float(country_wht["wht"])
+            wht = country_wht
             wht_source = "WHT_ctry.csv"
-            wht_source_url = country_wht.get("source_url", "")
-            wht_collected_on = country_wht.get("collected_on", "")
         else:
-            fallback_wht = country_wht["wht"] if country_wht is not None else 0
-            wht = _parse_percent(country.get("withholding_tax", fallback_wht))
+            wht = _parse_percent(country.get("withholding_tax", country_wht if country_wht is not None else 0))
             wht_source = "input_or_fallback"
-            wht_source_url = country_wht.get("source_url", "") if country_wht else ""
-            wht_collected_on = country_wht.get("collected_on", "") if country_wht else ""
     else:
         wht = 0.0
         wht_source = "disabled"
-        wht_source_url = ""
-        wht_collected_on = ""
 
     inflation = _parse_percent(country.get("inflation_rate", 0))
 
@@ -202,15 +153,12 @@ def compute_country(
     hedge_spread = local_base - fx_base + 0.01 + 0.005
     apply_hedge = 1.0 if assumption.get("apply_fx_hedge", False) else 0.0
 
-    vat_rules = vat_fx_rules.get(country_name.lower())
-    if vat_rules is None:
-        raise ValueError(f"{country_name}: missing VAT rule in VAT country table")
+    include_vat_in_fx = vat_fx_rules.get(country_name.lower())
+    if include_vat_in_fx is None:
+        raise ValueError(f"{country_name}: missing VAT FX rule in VAT country table")
+    vat_fx_applied = vat if include_vat_in_fx else 0.0
 
-    apply_vat_switch = bool(assumption.get("apply_vat", False))
-    vat_applied = vat_ori if (apply_vat_switch and vat_rules["include_local"]) else 0.0
-    vat_fx_applied = vat_ori if (apply_vat_switch and vat_rules["include_fx"]) else 0.0
-
-    kd1 = local_financing / (1 - vat_applied) if (1 - vat_applied) > 0 else float("inf")
+    kd1 = local_financing / (1 - vat) if (1 - vat) > 0 else float("inf")
     # Parallel-tax denominator for Kd2: 1 - WHT - VAT_fx
     fx_tax_factor = 1 - wht - vat_fx_applied
     kd2 = (fx_financing + apply_hedge * hedge_spread) / fx_tax_factor if fx_tax_factor > 0 else float("inf")
@@ -226,15 +174,11 @@ def compute_country(
             "project_credit_spread": project_spread,
             "equity_rf_used": equity_rf,
             "us_sovereign_spread_used": us_sovereign_spread,
-            "vat_original": vat_ori,
-            "vat_local_rule_applied": vat_rules["include_local"],
-            "vat_fx_rule_applied": vat_rules["include_fx"],
-            "vat_applied": vat_applied,
+            "vat_applied": vat,
+            "vat_fx_rule_applied": include_vat_in_fx,
             "vat_fx_applied": vat_fx_applied,
             "wht_applied": wht,
             "wht_source": wht_source,
-            "wht_source_url": wht_source_url,
-            "wht_collected_on": wht_collected_on,
         },
         "outputs": {
             "levered_beta": beta_l,
@@ -278,13 +222,9 @@ def main() -> None:
     payload = json.loads(Path(args.input).read_text(encoding="utf-8"))
     icr_rows = load_icr_table(Path(args.icr_table))
     vat_fx_rules = load_vat_country_table(Path(args.vat_country_table))
+    wht_country_rules = load_wht_country_table(Path(args.wht_country_table))
 
     assumption = payload["assumptions"]
-    wht_country_rules = load_wht_country_table(
-        Path(args.wht_country_table),
-        max_age_days=int(assumption.get("max_wht_age_days", 90)),
-        allow_stale=bool(assumption.get("allow_stale_wht", False)),
-    )
     usd_inputs = payload["usd_inputs"]
     results = [compute_country(c, assumption, usd_inputs, icr_rows, vat_fx_rules, wht_country_rules) for c in payload["countries"]]
 
