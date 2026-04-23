@@ -1,6 +1,6 @@
-country,include_vat_in_fx_debt,notes
-Canada,1,Apply VAT gross-up in FX debt return
-Brazil,1,Apply VAT gross-up in FX debt return
-Argentina,1,Apply VAT gross-up in FX debt return
-Chile,1,Apply VAT gross-up in FX debt return
-Peru,1,Apply VAT gross-up in FX debt return
+country,include_vat_in_local_debt,include_vat_in_fx_debt,notes
+Canada,1,1,Apply VAT gross-up in local and FX debt returns
+Brazil,1,1,Apply VAT gross-up in local and FX debt returns
+Argentina,1,1,Apply VAT gross-up in local and FX debt returns
+Chile,1,1,Apply VAT gross-up in local and FX debt returns
+Peru,1,1,Apply VAT gross-up in local and FX debt returns

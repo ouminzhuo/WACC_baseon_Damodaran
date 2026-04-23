@@ -36,7 +36,7 @@
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 
 ## 二、仓库内数据
-- `VAT_ctry.csv`：国家维度规则，判断外币债权回报率中是否计入 VAT。
+- `VAT_ctry.csv`：国家维度规则，提供 `include_vat_in_local_debt` 和 `include_vat_in_fx_debt`。
 - `WHT_ctry.csv`：国家维度规则，提供各国 WHT 取值并用于校验。
 - `ICR_table.csv`：ICR 区间 → 评级与项目利差（Spread）。
 - `betaemerg.xls`：巴西、阿根廷、智利、秘鲁等新兴市场行业 Beta（Industry Averages）。
@@ -86,7 +86,8 @@
 
 ## 六、公式约定
 
-- 外币债权 VAT 规则：根据 `VAT_ctry.csv` 的 `include_vat_in_fx_debt` 判定是否在 `Kd2` 中计入 VAT。
+- 营业税方法：`VAT = S × VAT_ori`。
+- 本币债权使用 `S_local=include_vat_in_local_debt`；外币债权使用 `S_fx=include_vat_in_fx_debt`。
 
 - 股权侧无风险利率口径：`Ke` 中的 `Rf` 统一取 10 年美债利率（USD），不取本币10Y。
 - 杠杆 Beta：`βL = βU × [1 + (1-Tc) × D/E]`

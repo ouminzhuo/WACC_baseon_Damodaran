@@ -49,14 +49,15 @@
 ### 4) 税项与对冲调整
 
 - `vat_applied`
-  - 若 `apply_vat = true`，则 `vat_applied = vat`；否则为 `0`
+  - 按你定义的方法：`vat_applied = apply_vat × S_local × VAT_ori`
+  - 其中 `S_local` 来自 `VAT_ctry.csv` 的 `include_vat_in_local_debt`
 
 - `wht_applied`
   - 若 `apply_wht = true`，则 `wht_applied = withholding_tax`；否则为 `0`
 
 - `vat_fx_applied`（外币债权 VAT）
-  - 从 `VAT_ctry.csv` 读取国家开关 `include_vat_in_fx_debt`
-  - 开关为真时：`vat_fx_applied = vat_applied`；否则 `vat_fx_applied = 0`
+  - 按你定义的方法：`vat_fx_applied = apply_vat × S_fx × VAT_ori`
+  - 其中 `S_fx` 来自 `VAT_ctry.csv` 的 `include_vat_in_fx_debt`
 
 - `hedge_cost`
   - `hedge_cost = local_base_rate - fx_base_rate + 0.01 + 0.005`
@@ -90,7 +91,9 @@
   - `project_credit_spread`
   - `equity_rf_used`
   - `us_sovereign_spread_used`
+  - `vat_original`
   - `vat_applied`
+  - `vat_local_rule_applied`
   - `vat_fx_rule_applied`
   - `vat_fx_applied`
   - `wht_applied`
