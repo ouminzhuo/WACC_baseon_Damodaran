@@ -4,10 +4,14 @@
     "debt_ratio": 0.8,
     "local_debt_ratio": 0.5,
     "fx_debt_ratio": 0.5,
-    "apply_vat": false,
-    "apply_wht": false,
+    "apply_vat": true,
+    "apply_wht": true,
     "apply_fx_hedge": false,
-    "enforce_country_wht": true
+    "enforce_country_wht": true,
+    "allow_stale_wht": false,
+    "max_wht_age_days": 90,
+    "enforce_tax_from_tables": true,
+    "error_on_tax_input_mismatch": true
   },
   "usd_inputs": {
     "usd_10y_bond_rate": 0.043,
