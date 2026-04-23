@@ -1,6 +1,6 @@
 country,include_vat_in_local_debt,include_vat_in_fx_debt,notes
 Canada,0,0,"No VAT gross-up on loan interest; GST/HST financial services generally exempt"
-Brazil,0,0,"Current regime: no VAT gross-up on loan interest; check IOF/WHT and CBS/IBS tax reform separately"
+Brazil,1,1,"User override: apply VAT gross-up on FX debt per project requirement (17% VAT on interest)"
 Argentina,1,1,"Conservative screening assumption: apply VAT gross-up on local and FX debt; validate 10.5%/21% treatment with local tax counsel"
 Chile,0,0,"No VAT gross-up on loan interest; check stamp tax and WHT separately"
 Peru,0,0,"Default 0 if lender is a qualifying bank/financial institution; switch FX debt to 1 if offshore lender is a non-qualifying non-financial entity"
