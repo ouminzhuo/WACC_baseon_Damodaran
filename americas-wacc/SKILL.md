@@ -29,8 +29,9 @@ Then auto-collect or prefill the rest (with source citation):
 - `local_10y_bond_rate`: Trading Economics
 - `total_erp`, `sovereign_default_spread_local`, `corporate_tax_rate`, `Moody's rating`: Damodaran ctryprem
 - `vat`, `withholding_tax`: PwC Tax Summaries
-- `VAT_ctry.csv`: country switch for VAT inclusion in FX debt return
+- `VAT_ctry.csv`: country switches (`include_vat_in_local_debt`, `include_vat_in_fx_debt`)
 - `WHT_ctry.csv`: country-level WHT defaults/constraints to prevent missing WHT
+- `scripts/refresh_wht_table.py`: update WHT table from online lookups with timestamps
 - `inflation_rate`: official CPI YoY sources
 - `unlevered_beta`: repository beta workbooks (`betaemerg.xls`, `betaRest.xls`)
 - `usd_10y_bond_rate`: market data source used by the analyst team
@@ -56,7 +57,7 @@ Optional but recommended:
 Global assumptions:
 - `equity_ratio`, `debt_ratio`
 - `local_debt_ratio`, `fx_debt_ratio`
-- `apply_vat`, `apply_wht`, `apply_fx_hedge`, `enforce_country_wht`
+- `apply_vat`, `apply_wht`, `apply_fx_hedge`, `enforce_country_wht`, `allow_stale_wht`, `max_wht_age_days`
 - `usd_10y_bond_rate`
 - `us_sovereign_default_spread` (used for FX base rate)
 - `usd_equity_rf_rate` (default to `usd_10y_bond_rate`, used in Ke)
@@ -66,6 +67,8 @@ Global assumptions:
 Run from repo root:
 
 ```bash
+python americas-wacc/scripts/refresh_wht_table.py --out WHT_ctry.csv --set "Canada=0.25|https://taxsummaries.pwc.com/canada/corporate/withholding-taxes"
+
 python americas-wacc/scripts/calc_wacc.py \
   --input americas-wacc/references/input_template.json \
   --icr-table ICR_table.csv \
@@ -86,6 +89,7 @@ python americas-wacc/scripts/calc_wacc.py \
 
 Ke 的无风险利率统一使用 10 年美债（`usd_equity_rf_rate`，默认取 `usd_10y_bond_rate`）。
 外币基准利率使用 `usd_10y_bond_rate - us_sovereign_default_spread`（美国主权违约利差）。
+VAT 按国家因子法计算：`VAT_effective = apply_vat × S × VAT_ori`。
 Kd2 分母使用并行税口径：`1 - WHT - VAT_fx`。
 
 Always include:
